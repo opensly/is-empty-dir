@@ -5,13 +5,17 @@ const path = require('path');
 // Read the main file
 const mainFile = fs.readFileSync('index.js', 'utf8');
 
-// Convert to ES modules
-const esModuleContent = mainFile
-  .replace("const { readdir, stat } = require('fs/promises');", "import { readdir, stat } from 'fs/promises';")
-  .replace("const { readdirSync, statSync } = require('fs');", "import { readdirSync, statSync } from 'fs';")
-  .replace(/^\/\/ CommonJS exports[\s\S]*$/m, `// ES modules exports
-export default isEmptyDir;
-export { isEmptyDir, isEmptyDirSync };`);
+// Convert require to import (handle both single and double quotes)
+let esModuleContent = mainFile
+  .replace(/const \{ readdir, stat \} = require\(["']fs\/promises["']\);/, "import { readdir, stat } from 'fs/promises';")
+  .replace(/const \{ readdirSync, statSync \} = require\(["']fs["']\);/, "import { readdirSync, statSync } from 'fs';");
+
+// Remove all CommonJS exports
+esModuleContent = esModuleContent.replace(/\n?\/\/ CommonJS exports[\s\S]*?(?=\n\/\/|$)/g, '');
+esModuleContent = esModuleContent.replace(/\n?module\.exports[\s\S]*?(?=\n|$)/g, '');
+
+// Add ESM exports at the end
+esModuleContent += `\n// ES modules exports\nexport default isEmptyDir;\nexport { isEmptyDir, isEmptyDirSync };\n`;
 
 // Write the ES module file
 fs.writeFileSync('index.mjs', esModuleContent);

@@ -1,6 +1,6 @@
 {
   "name": "is-empty-dir",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Check if a directory is empty with modern API and better performance",
   "main": "index.js",
   "module": "index.mjs",

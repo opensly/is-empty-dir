@@ -1,5 +1,5 @@
-const { readdir, stat } = require("fs/promises");
-const { readdirSync, statSync } = require("fs");
+import { readdir, stat } from 'fs/promises';
+import { readdirSync, statSync } from 'fs';
 
 /**
  * Check if a directory is empty (async)
@@ -119,6 +119,8 @@ function shouldIgnore(filename, ignorePatterns) {
     return false;
   });
 }
+
+// ES modules exports (will be handled by build script)
 
 // ES modules exports
 export default isEmptyDir;
